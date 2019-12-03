@@ -4,6 +4,7 @@
   > 2019년 2학기 알고리즘에서 작성한 코드들입니다.
   >> HW01,02,03 에 있는 코드들중, main함수와 파일입출력, 기본연산 함수들은 **professor Gil-Jin Jang** 의 template 코드입니다.
      HW04의 코드들은 저의 코드입니다.
+     
      주석처리되어 __(/* GJ: FILL */)__ 라고 되어있는 함수부분에 작성한 코드는 저의 코드입니다.
 
 ### Table of Contents
@@ -213,12 +214,16 @@
 노드들을 한번의 루프마다 merge 하게 됩니다. 이때, merge 가 일어나 그 head 가 존재하는곳은 이중포인터 array 의 start 부터 mid 까지의 부분입니다. 결과적으로 루프가 수행되면서 이 start와 mid 가 이중포인터의 0번째로 모두 합쳐지게 될 것이므로 총 loop 는 이중포인터의 1번째 배열이 NULL을 가리키면 종료할수 있습니다. 각 노드들이 병합될때, 두개의 array가 각각 key 값들을 비교하게 되고 이미 비교한 key 값들에 의해 그 뒤의 node 들은 sorting 되어 이미 연결되어있는 node 들과 다시한번 비교를 진행하지 않아도 됩니다. 이부분에서 수행시간에서의 이득이 발생합니다
 마지막으로 정렬된 linkedlist 의 연결된 node 들은 모두 head_array[0] 을 헤드로 하는 linkedlist 형태로 존재하므로 이 head 를 반환해주는 함수로 linkedlist 를 사용한 mergesort 함수를 작성하였습니다.
 
-
-
- 
-  
-  
- 
+* 마지막으로, heavy array sort 와 heavy list sort 의 설명입니다
+ 각 heavey sort 들은 앞서 작성된 merge 와 insertion sort 에서 부하가 추가된 새로운 struct를 node 로 하는 함수로 약간씩만 수정을 하였습니다.
+ ```c
+ struct LHNode *list_insertion_sort ( struct LHNode *head )
+{
+  /* GJ: FILL */
+  struct LHNode *cur,*cur2,*tmp; 
+ ```
+ 위의 코드와 같이 **struct LHNode**로  변경 되었습니다.
+ 코드 실행결과는, array 로 구현한 sorting 함수에서는 데이터의 크기가 커짐에 따라 sort 되는 시간이 오래 결렸습니다. 하지만 linkedlist 로 구현한 sorting 에서는 data를 직접 load 해오지 않고 포인터의 이동을 통해서만 sorting 이 이루어지므로 실행시간이 매우 단축되었습니다. 
   
 -------------------------------------------------------  
 # HW03    
