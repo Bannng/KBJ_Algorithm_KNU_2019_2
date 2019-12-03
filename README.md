@@ -243,15 +243,15 @@
    4.int print_BST_1(FILE *fp, struct BTNode *bst, int level)
    5.int print_BST_2(FILE *fp, struct BTNode *bst, int level, struct Node *head, struct Node *top)
 
-   다음으로 bst를 complete bst 로 변환하는 함수도 작성하였습니다
-   struct BTNode *BST_to_completeBST(struct BTNode *bst, int numNodes)
+     다음으로 bst를 complete bst 로 변환하는 함수도 작성하였습니다
+     struct BTNode *BST_to_completeBST(struct BTNode *bst, int numNodes)
    
-   또한, bst 를 insertion 으로 생성하는 것이 아닌 quicksort 알고리즘을 통해서 생성하는 함수도 작성하였습니다.
-   struct BTNode *generate_BST_quicksort_basic(struct BTNode *lhbt)
+     또한, bst 를 insertion 으로 생성하는 것이 아닌 quicksort 알고리즘을 통해서 생성하는 함수도 작성하였습니다.
+     struct BTNode *generate_BST_quicksort_basic(struct BTNode *lhbt)
   
-   마지막으로 bst를 quicksort 로 생성할때 , 그 root 를 어떤것으로 잡는지에 따라 height 가 차이가 나게 되는데, 최소한의 height 를
-   가지기 위한 advanced 된 알고리즘을 작성하였습니다.
-   struct BTNode *generate_BST_quicksort_advanced(struct BTNode *lhbt)
+    마지막으로 bst를 quicksort 로 생성할때 , 그 root 를 어떤것으로 잡는지에 따라 height 가 차이가 나게 되는데, 최소한의 height 를
+    가지기 위한 advanced 된 알고리즘을 작성하였습니다.
+    struct BTNode *generate_BST_quicksort_advanced(struct BTNode *lhbt)
 
 ## 함수설명3
   *
