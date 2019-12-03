@@ -73,8 +73,15 @@
 # HW02    
 ## 개요2
   * HW02 는 listosrt 를 이용한 과제입니다. 구현해야할 것들은 먼저 
-  merge sort 를 array를 이용하여 구현
-  이 코드는 arraysort_kbj.c 파일에 있습니다
+  1. merge sort 를 array를 이용하여 구현
+      (이 코드는 arraysort_kbj.c 파일에 있습니다)
+  2. insertion sort를 linked list 를 이용하여 구현
+  3.  merge sort 를 linked list를 이용하여 구현
+      (이 코드는 listsort_kbj.c 파일에 있습니다)
+  4. time challenge 로 구조체에 heavy load 를 붙여 정렬될때의 부하를 주었습니다.
+      (이 코드는 heavy_arraysort , heavy_listsort.c 파일에 있습니다)
+ 
+    
   
  
 ## 함수설명2
