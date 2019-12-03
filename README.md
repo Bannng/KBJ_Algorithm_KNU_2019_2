@@ -87,55 +87,18 @@
   * 먼저 merge sort 의 코드입니다
   ```c
   void merge_sort( long A[], long Tmp[], int left, int right )
-  {
+{
   /* GJ: FILL */
   if(left<right)
   {
       int mid = (left+right)/2;
       merge_sort(A,Tmp,left,mid);
       merge_sort(A,Tmp,mid+1,right);
-      //get merge(A,Tmp,left,mid,right);
-      int i=left;
-      int j = mid+1; // ¿ìÃøÀÇ ½ÃÀÛ
-      int t=0;
-      while(i<=mid && j<=right)
-      {
-          if(A[i] <= A[j])
-          {
-              Tmp[t] = A[i];
-              t++;
-              i++;
-          }
-          else
-          {
-              Tmp[t] = A[j];
-              j++;
-              t++;
-          }
-      }
-      while(i<=mid)
-      {
-          Tmp[t] = A[i];
-          t++;
-          i++;
-      }
-      while(j<=right)
-      {
-          Tmp[t] = A[j];
-          t++;
-          j++;
-      }
-      t--;
-      while(t>=0)
-      {
-          A[left+t] = Tmp[t];
-          t--;
-      }
-  }
-  else return;
-  }  
   ```
-  merge sort의 함수 
+  위의 코드는 array를 사용한 mergesort 의 부분입니다. mergesort 는 recusrive 하게 구현될수 있으므로 최소 단위까지 가장 먼저 호출되는
+  mergesort(left,mid) 가 최소단위까지 실행된다면, 그다음의 merge_sort(mid+1,right) 가 최소단위 까지 호출되고 그 다음 실제 merge를 하는 코드 라인들이 실행이 됩니다. 최소단위에서 merge된 가장 최소단위 함수는 그 배열을 차례대로 반환하여 가장 처음 호출된 함수로 반환되었을때는 처음 배열에서 2부분으로 나뉘어져 왼쪽,오른쪽이 각각 정렬된 부분 배열로 존재하게 됩니다. 마지막으로 이 함수가 merge 하면서 결과적으로 sorting 된 ary 가 반환되게 됩니다.
+ 
+  
 -------------------------------------------------------  
 # HW03    
 ## 개요3
