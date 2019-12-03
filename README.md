@@ -237,11 +237,11 @@
    위의 두가지 함수가 bst 를 만드는 함수로 1번 함수는 노드 1개를 기존의 bst에 삽입하는 알고리즘입니다. 2번 함수는 fileio 를 통해 txt 파일을    통해 읽어들인 숫자들이 lhbt 즉 왼쪽 링크로만 이어진 트리형태로 반환되게 되고, 이를 인자로 받아 bst 를 완성하는 함수입니다.
    
    * 다음으로 bst 를 출력하는것에 대한 함수도 작성하였습니다.
-   1.int print_LHBT(FILE *fp, struct BTNode *lhbt)
-   2.int print_BST_sortedorder(FILE *fp, struct BTNode *bst, int level)
-   3.int print_BST_right_center_left(FILE *fp, struct BTNode *bst, int level)
-   4.int print_BST_1(FILE *fp, struct BTNode *bst, int level)
-   5.int print_BST_2(FILE *fp, struct BTNode *bst, int level, struct Node *head, struct Node *top)
+   1. int print_LHBT(FILE *fp, struct BTNode *lhbt)
+   2. int print_BST_sortedorder(FILE *fp, struct BTNode *bst, int level)
+   3. int print_BST_right_center_left(FILE *fp, struct BTNode *bst, int level)
+   4. int print_BST_1(FILE *fp, struct BTNode *bst, int level)
+   5. int print_BST_2(FILE *fp, struct BTNode *bst, int level, struct Node *head, struct Node *top)
    
    * 다음으로 bst를 complete bst 로 변환하는 함수도 작성하였습니다
    
