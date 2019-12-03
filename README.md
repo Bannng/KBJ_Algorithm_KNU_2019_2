@@ -80,13 +80,62 @@
       (이 코드는 listsort_kbj.c 파일에 있습니다)
   4. time challenge 로 구조체에 heavy load 를 붙여 정렬될때의 부하를 주었습니다.
       (이 코드는 heavy_arraysort , heavy_listsort.c 파일에 있습니다)
- 
-    
-  
+ 이번 과제에서는 array를 사용한 sorting 과 linked list를 사용한 sorting 을 직접 구현하고 특정 조건에서 그 둘의 차이를 비교 하는
+ 과제 입니다.
  
 ## 함수설명2
-  *
-  
+  * 먼저 merge sort 의 코드입니다
+  ```c
+  void merge_sort( long A[], long Tmp[], int left, int right )
+  {
+  /* GJ: FILL */
+  if(left<right)
+  {
+      int mid = (left+right)/2;
+      merge_sort(A,Tmp,left,mid);
+      merge_sort(A,Tmp,mid+1,right);
+      //get merge(A,Tmp,left,mid,right);
+      int i=left;
+      int j = mid+1; // ¿ìÃøÀÇ ½ÃÀÛ
+      int t=0;
+      while(i<=mid && j<=right)
+      {
+          if(A[i] <= A[j])
+          {
+              Tmp[t] = A[i];
+              t++;
+              i++;
+          }
+          else
+          {
+              Tmp[t] = A[j];
+              j++;
+              t++;
+          }
+      }
+      while(i<=mid)
+      {
+          Tmp[t] = A[i];
+          t++;
+          i++;
+      }
+      while(j<=right)
+      {
+          Tmp[t] = A[j];
+          t++;
+          j++;
+      }
+      t--;
+      while(t>=0)
+      {
+          A[left+t] = Tmp[t];
+          t--;
+      }
+  }
+  else return;
+  }  
+  ```
+  merge sort의 함수 
 -------------------------------------------------------  
 # HW03    
 ## 개요3
