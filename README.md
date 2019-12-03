@@ -354,7 +354,7 @@
    ```
 위의 right center left 와 코드실행순서는 크게 다르지않지만, right node 들을 출력할때 줄바꿈이 일어나지 않고 / 를 통해서 right node 들을 구분지었다. 또한 left node 들도 + 모양과 공백으로 그 출력을 나타내었다. 위의 재귀함수 실행순서에, left 가 출력될때마다 각 level 에 알맞는 공백을 출력하고 마지막에 left node 를 출력할땐 + 를 출력하게 하였다. 반환값은 level 값들을 return 값으로 받아 그 level 값이 가장 깊을때의 수를 계속 반환하게 하여 이 트리의 최종 level을 반환하게 하였다
     
-    * int print_BST_2(FILE *fp, struct BTNode *bst, int level, struct Node *head, struct Node *top)
+   * int print_BST_2(FILE *fp, struct BTNode *bst, int level, struct Node *head, struct Node *top)
 ```c
     struct Node *subandprintblank(FILE *fp,struct Node *head)
     {
@@ -375,8 +375,106 @@
     
 이 함수와 linked list 를 이용하여 bst print 1에서 left를 출력할때 공백대신 앞선 left node 가 존재한다면 , 그정보를 기억해 | 를 연달아 출력하게 하는 print 함수를 구현하였다. 함수를 재귀적으로 호출할때 마다 생성된 linked list 의 값들이 변화하여 만약 left node 가 존재한다면 list 에 1의 값을 가지는 노드가 추가되고 기존의 노드들은 모두 1증가한다. 만약 left node 가 없다면 , 0의 노드가 추가되고 아무 연산도 이루어지지 않는다. 이를 통해 각 left 노드가 얼마만큼의 line 수를 기다렸다가 출력되는지 linkedlist 에 그 정보가 저장되는 것이고, 0인 노드들은 아무 연산도 이루어지지 않으므로 left node 의 | 를 표시하지 않게 된다. 재귀적으로 호출된 함수가 반환되면서 이 linkedlist 의 값들도 소비 되는데, 위의 subandprintblank 함수를 통해 각 list 에 알맞는 출력이 행해지게 되고 결과적으로 left node를 | 로 연결한 270도 회전 bst 의 출력을 확인할 수 있다.
    
+   * struct BTNode *BST_to_completeBST(struct BTNode *bst, int numNodes)
+   ```c
+  struct BTNode **aryhead = (struct BTNode**)malloc(sizeof(struct BTNode*)*numNodes);
+  struct BTNode *comroot;
+
+  aryhead = sorttoary(bst,aryhead);
+
+  comroot = makecompbst(0,numNodes-1,aryhead);
+
+  return comroot; 
+  ```
   
+  ```c
+  struct BTNode *makecompbst(int start, int end, struct BTNode **aryhead)
+{
+    int rootindex;
+    int numnode = end-start+1;
+    struct BTNode *comproot;
+
+    rootindex = start+getroot(numnode);
+
+    comproot = *(aryhead+rootindex);
+    //printf("%s ",getkey(comproot));
+
+    if(start == end) return comproot;
+    else
+    {
+        if(start<=rootindex-1) comproot->left = makecompbst(start,rootindex-1,aryhead);
+        if(rootindex+1<=end)   comproot->right = makecompbst(rootindex+1,end,aryhead);
+        return comproot;
+    }
+}
+  ```
+   
+   bst 를 complete bst 로 변형하는 함수이다. bst 의 node 들을 하나씩 때와 이중포인터로 늘여 놓은다음, 그 이중포인터 array 에서 complete bst 를 만들수 있는 root 노드를 계속하여 선정하게되고, 이를 재귀적으로 호출하게 하여 complete bst 를 완성한다.
+   root 를 고를때에는 , 먼저 노드의 개수를 파악하여야하고 , 이 노드의 개수가 가장 마지막 level/2 보다 큰지, 작은지 판단해 주어야 한다. 이를 각 level 마다 수행해 주면 최종적으로 complete bst 를 만들수 있는 root 들을 계속 pick 하여 bst 를 변형 할 수 있다.
+   
+  * struct BTNode *generate_BST_quicksort_basic(struct BTNode *lhbt)
+  ```c
+  if(lhbt != NULL && lhbt->left != NULL)
+  {
+      //struct BTNode *root;
+      //root = lhbt;
+      lhbt = partition(lhbt);//root = partition(root);
+      lhbt->left = generate_BST_quicksort_basic(lhbt->left);
+      lhbt->right = generate_BST_quicksort_basic(lhbt->right);
+  }
+  return lhbt;
+  ```
+  quicksort 를 활용하여 bst 를 만드는 함수는, 가장 첫번째 node 를 root 로 삼아 그것보다 작은 node 들은 left, 큰 노드들은 right 에 lhbt 형식으로 link 해준다. 이를 recusrive 하게 수행하면, 가장 마지막 leaf 까지 sort 되므로 bst 가 완성된다.
   
+  * struct BTNode *generate_BST_quicksort_advanced(struct BTNode *lhbt)
+  ```c
+   if(lhbt != NULL)
+  {
+      lhbt = getmidroot(lhbt);
+      lhbt = partition(lhbt);
+      lhbt->left = generate_BST_quicksort_advanced(lhbt->left);
+      lhbt->right = generate_BST_quicksort_advanced(lhbt->right);
+  }
+  return lhbt;  
+  ``` 
+  
+  ```c
+  struct BTNode *getmidroot(struct BTNode *bst)
+{
+    if(bst != NULL)
+    {
+      if(bst->left == NULL || bst->left->left == NULL) return bst;
+      else
+      {
+        struct BTNode *midroot, *cur;
+        cur = bst;
+        if(comparekey(cur,cur->left)+comparekey(cur,cur->left->left)>=-1
+           && comparekey(cur,cur->left)+comparekey(cur,cur->left->left)<=1)
+        {
+            midroot = cur;
+            //printf("%s ",getkey(midroot));
+        }
+        else if(comparekey(cur->left,cur)+comparekey(cur->left,cur->left->left)>=-1
+           && comparekey(cur->left,cur)+comparekey(cur->left,cur->left->left)<=1)
+        {
+            midroot = cur->left;
+            //printf("%s ",getkey(midroot));
+            cur->left = cur->left->left;
+            midroot->left = cur;
+        }
+        else
+        {
+            midroot = cur->left->left;
+            //printf("%s  ",getkey(midroot));
+            cur->left->left = cur->left->left->left;
+            midroot->left = cur;
+        }
+        return midroot;
+      }
+    }
+}
+  ```
+  위의 quicksort basic 은 가장 첫번째 노드를 root 로 하여 bst 의 높이가 최적이 아니다. 이를 최적의 높이를 가지는 bst 로 만들기 위해 처음 3노드의 key 값들을 비교하고, 그중 중간값을 가지는 node를 root 로 삼아 bst 를 만들게 되면, 앞선 basic quicksort 보다 높이가 줄어든 bst를 얻을수 있다. 마지 compelete bst 를 만드는것 처럼 매 순간 greedy 하게 중간값들의 노드를 찾아 root 로 삼는다면 optimal 한 결과가 나오지 않을까 생각 해 보았다.
   
 -------------------------------------------------------  
 # HW04    
