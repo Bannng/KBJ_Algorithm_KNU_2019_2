@@ -479,11 +479,88 @@
 -------------------------------------------------------  
 # HW04    
 ## 개요4
-  * 
-
+  * HW04 는 0-1 knapsack problem 에 관한 과제로, 총 4가지의 문제가 있다.
+  1. 기본적인 0-1 knapsack problem
+  2. 0-1knapsack with one item split
+  3. 0-1knapsack with one duplicate item
+  4. 0-1knapsack with two identical knapsacks
+  의 문제를 해결하기 위한 코드를 작성하였다.
+  이번 코드는 모두 작성자에 의해 작성되었다.
 
 ## 함수설명4
-  *
+  * 1. 0-1 knapsack problem
+  ```c
+  int **dp(struct item *sary, int n, int W)
+{
+    int **B;
+    B = (int**)malloc((W+1)*sizeof(int*));
+    for(int i=0; i<W+1; i++) B[i] = (int*)malloc((n+1)*sizeof(int));
+    //int B[W+1][n+1];
+
+    for(int i = 0; i<=W ; i++) B[i][0] = 0;
+    for(int i = 1; i<=n;i++)
+    {
+        B[0][i] = 0;
+        for(int w=1; w<=W ; w++)
+        {
+            int _w = (sary+i-1)->weight;
+            int _b = (sary+i-1)->value;
+            if(_w <= w)
+            {
+                if(_b+B[w-_w][i-1]>B[w][i-1]) B[w][i] = _b + B[w-_w][i-1];
+                else B[w][i] = B[w][i-1];
+            }
+            else B[w][i] = B[w][i-1];
+        }
+    }
+    checkary(B,n,W);
+    printf("best benefit : %d\n", B[W][n]);
+    return B;
+}
+  ```
+  dp table 을 작성하는 함수이다. malloc 함수를 통해 이차원 배열을 할당받고 각 아이템의 weight 와 value 에 의해 dp table 을 채워나간다. 이때, 가장 마지막 요소(B[W][n]) 에 있는 값이 best 한 value 가 된다.
+  dp table 을 작성하여 best final benefit 을 구하였으면, dp tabel 을 통하여 무슨 아이템을 골랐는지 backtrack 할 수 있다.
+  ```c
+  void backtrack(int **B, int n, int W, struct item* sary)
+{
+    STACK *stack;
+    stack = createStack();
+    while(B[W][n]!=0)
+    {
+        if(B[W][n]==B[W][n-1])
+        {
+            n=n-1;
+        }
+        else
+        {
+            W = W-(sary+n-1)->weight;
+            n = n-1;
+            //printf("%d \n",n+1);
+            pushStack(stack,n+1);
+        }
+    }
+    printf("item index :");
+    while(stack->top!=NULL)
+    {
+        popStack(stack);
+    }
+    free(stack);
+}
+  ```
+  backtrack 의 알고리즘은, 2차원배열의 가장마지막요소 B[W][n] 에서 시작해, 만약 왼쪽에 같은 값이 있다면 왼쪽으로 한칸이동, 없다면 바로 왼쪽열의 내가가진 weight 만큼 뺀 행으로 이동한다. 이를 통해 best final benefit 에서부터 무슨 아이템을 마지막으로 넣었는지 찾아낼 수 있으며, 이 찾아낸 값들을 stack 에 push 하여 가장 먼저 넣은 item 이 stack 의 top에 저장되게 된다. item 을 확인, 출력하기 위해선 단지 stack 에 저장된 item 의 인덱스 값들을 pop 해주기만 하면 된다.
+  
+  *  0-1knapsack with one item split
+  ```c
+  double **dp2(struct spitem *ssary, int n, int W)
+{
+    double **B;
+    B = (double**)malloc((2*W+1)*sizeof(double*));
+    for(int i=0; i<2*W+1; i++) B[i] = (double*)malloc((n+1)*sizeof(double));
+    //int B[W+1][n+1];
+  ```
+  2번 문제에서 dp table 은 value 값이 double 형을 가진다는것, split 된 아이템의 value 가 0.5 단위가 되므로 0~8까지의 weight 에서 0~16 까지의 weight 로 표현하였다. 실제 0~16까지인것이 아니라, 0,0.5,1,1.5 로 눈금이 0.5 로 변경됨에 따라 배열의 행 index 에는 소숫점으로 접근할수 없으므로 16개의 정수로 표현하였다. best 한 benefit 은 **B[2*W][n]** 에 저장된다.
+  
+  
   
 -------------------------------------------------------  
   
