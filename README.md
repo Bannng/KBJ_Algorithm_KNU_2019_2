@@ -351,13 +351,13 @@
     }
     if(level == 1) fprintf(fp,"\n");
     return rlevel>llevel?rlevel:llevel;
-    ```
-    위의 right center left 와 코드실행순서는 크게 다르지않지만, right node 들을 출력할때 줄바꿈이 일어나지 않고 / 를 통해서 right node 들을 구분지었다. 또한 left node 들도 + 모양과 공백으로 그 출력을 나타내었다. 위의 재귀함수 실행순서에, left 가 출력될때마다 각 level 에 알맞는 공백을 출력하고 마지막에 left node 를 출력할땐 + 를 출력하게 하였다. 반환값은 level 값들을 return 값으로 받아 그 level 값이 가장 깊을때의 수를 계속 반환하게 하여 이 트리의 최종 level을 반환하게 하였다
+   ```
+위의 right center left 와 코드실행순서는 크게 다르지않지만, right node 들을 출력할때 줄바꿈이 일어나지 않고 / 를 통해서 right node 들을 구분지었다. 또한 left node 들도 + 모양과 공백으로 그 출력을 나타내었다. 위의 재귀함수 실행순서에, left 가 출력될때마다 각 level 에 알맞는 공백을 출력하고 마지막에 left node 를 출력할땐 + 를 출력하게 하였다. 반환값은 level 값들을 return 값으로 받아 그 level 값이 가장 깊을때의 수를 계속 반환하게 하여 이 트리의 최종 level을 반환하게 하였다
     
     * int print_BST_2(FILE *fp, struct BTNode *bst, int level, struct Node *head, struct Node *top)
-    ```c
+```c
     struct Node *subandprintblank(FILE *fp,struct Node *head)
-{
+    {
     struct Node *cur;
     struct Node *ccur;
     for(cur=head ; cur!=NULL ; cur= cur->next)
@@ -371,9 +371,9 @@
         if(ccur->key != 0 ) ccur->key = ccur->key - 1;
     }
     return head;
-    ```    
+```    
     
-    이 함수와 linked list 를 이용하여 bst print 1에서 left를 출력할때 공백대신 앞선 left node 가 존재한다면 , 그정보를 기억해 | 를 연달아 출력하게 하는 print 함수를 구현하였다. 함수를 재귀적으로 호출할때 마다 생성된 linked list 의 값들이 변화하여 만약 left node 가 존재한다면 list 에 1의 값을 가지는 노드가 추가되고 기존의 노드들은 모두 1증가한다. 만약 left node 가 없다면 , 0의 노드가 추가되고 아무 연산도 이루어지지 않는다. 이를 통해 각 left 노드가 얼마만큼의 line 수를 기다렸다가 출력되는지 linkedlist 에 그 정보가 저장되는 것이고, 0인 노드들은 아무 연산도 이루어지지 않으므로 left node 의 | 를 표시하지 않게 된다. 재귀적으로 호출된 함수가 반환되면서 이 linkedlist 의 값들도 소비 되는데, 위의 subandprintblank 함수를 통해 각 list 에 알맞는 출력이 행해지게 되고 결과적으로 left node를 | 로 연결한 270도 회전 bst 의 출력을 확인할 수 있다.
+이 함수와 linked list 를 이용하여 bst print 1에서 left를 출력할때 공백대신 앞선 left node 가 존재한다면 , 그정보를 기억해 | 를 연달아 출력하게 하는 print 함수를 구현하였다. 함수를 재귀적으로 호출할때 마다 생성된 linked list 의 값들이 변화하여 만약 left node 가 존재한다면 list 에 1의 값을 가지는 노드가 추가되고 기존의 노드들은 모두 1증가한다. 만약 left node 가 없다면 , 0의 노드가 추가되고 아무 연산도 이루어지지 않는다. 이를 통해 각 left 노드가 얼마만큼의 line 수를 기다렸다가 출력되는지 linkedlist 에 그 정보가 저장되는 것이고, 0인 노드들은 아무 연산도 이루어지지 않으므로 left node 의 | 를 표시하지 않게 된다. 재귀적으로 호출된 함수가 반환되면서 이 linkedlist 의 값들도 소비 되는데, 위의 subandprintblank 함수를 통해 각 list 에 알맞는 출력이 행해지게 되고 결과적으로 left node를 | 로 연결한 270도 회전 bst 의 출력을 확인할 수 있다.
    
   
   
