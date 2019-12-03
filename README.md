@@ -84,7 +84,7 @@
  과제 입니다.
  
 ## 함수설명2
-  * 먼저 merge sort 의 코드입니다
+  * 먼저 merge sort 의 코드 부분입니다
   ```c
   void merge_sort( long A[], long Tmp[], int left, int right )
 {
@@ -97,6 +97,127 @@
   ```
   위의 코드는 array를 사용한 mergesort 의 부분입니다. mergesort 는 recusrive 하게 구현될수 있으므로 최소 단위까지 가장 먼저 호출되는
   mergesort(left,mid) 가 최소단위까지 실행된다면, 그다음의 merge_sort(mid+1,right) 가 최소단위 까지 호출되고 그 다음 실제 merge를 하는 코드 라인들이 실행이 됩니다. 최소단위에서 merge된 가장 최소단위 함수는 그 배열을 차례대로 반환하여 가장 처음 호출된 함수로 반환되었을때는 처음 배열에서 2부분으로 나뉘어져 왼쪽,오른쪽이 각각 정렬된 부분 배열로 존재하게 됩니다. 마지막으로 이 함수가 merge 하면서 결과적으로 sorting 된 ary 가 반환되게 됩니다.
+  
+  * 다음으로 linked list 를 사용한 insertion sort 의 코드입니다.
+  ```c
+  struct LNode *list_insertion_sort ( struct LNode *head )
+{
+  /* GJ: FILL */
+  struct LNode *cur,*cur2,*tmp;
+
+  tmp = head;
+  cur = head->next;
+  head->next = NULL;
+  cur2 = cur;
+
+  while(cur!=NULL)
+    {
+        cur2 = cur2->next;
+        tmp = head;
+
+        if(cur->key <= tmp->key)
+        {
+            tmp = insert_head(tmp,cur);
+            head = tmp;
+        }
+        else
+        {
+            while(tmp!=NULL)
+            {
+                if(tmp->next == NULL)
+                {
+                    tmp = insert_next(tmp,cur);
+                    tmp = tmp->next;
+                    break;
+                }
+                else
+                {
+                    if(tmp->next->key >= cur->key)
+                    {
+                    tmp = insert_next(tmp,cur);
+                    break;
+                    }
+                    else tmp = tmp->next;
+                }
+            }
+        }
+        if(cur2 == NULL) cur = NULL;
+        else cur = cur2;
+    }
+    return head;
+}
+  ```
+  새로운 node 의 포인터를 입력받아 그 노드가 추가된 linkedlist 의 node를 다시 반환하는 함수입니다. 큰 while 문에서 cur 포인터(노드를 차례대로 하나씩 가리킴)가 NULL 을 가리킬때 까지 반복이 진행됩니다. cur 포인터가 각 노드들을 순회하면서 tmp의 삽입 될 노드의 key 값을 비교하게 되고 삽입되는 tmp 노드는 가장 앞에 삽입될 경우, 헤드를 새로 삽입하는 노드로 바꾸어 주어야 하고, 아니라면 순서에 올바르게 그 다음노드와 비교하여 알맞은 위치에 그 link 를 연결해 주면 됩니다. 
+  
+  * 다음으로 linked list 를 사용한 merge sort 의 코드 일부분 입니다.
+  ```c
+  struct LNode *list_array_merge_sort( struct LNode **head_array, int N )
+{
+  /* GJ: FILL */
+  int i,count;
+  int mid,mid1;
+  struct LNode *p1,*p2;
+
+  while(head_array[1]!=NULL)
+    {
+        mid = (N-1)/2;
+        mid1 = mid+1;
+
+        for(i=0;i<mid1;i++) // main loop to get all thing together
+        {
+            if(mid1+i == N) break;
+            else
+            {
+                p1 = head_array[i];
+                p2 = head_array[mid1+i]->next;
+                count = 0;
+
+                 while(head_array[mid1+i]!=NULL)
+                {
+                    if(count == 0)
+                    {
+                        if(p1->key >= head_array[mid1+i]->key)
+                        {
+                            p1 = insert_head(p1,head_array[mid1+i]);
+                            head_array[i] = p1;
+                            head_array[mid1+i] = p2;
+                            if(p2!=NULL) p2 = p2->next;
+                        }
+                        else
+                        {
+                            if(p1->next!=NULL)
+                            {
+                                if(p1->next->key > head_array[mid1+i]->key)
+                                {
+                                    p1 = insert_next(p1,head_array[mid1+i]);
+                                    head_array[mid1+i] = p2;
+                                    if(p2!=NULL) p2 = p2->next;
+                                }
+                                else
+                                {
+                                    p1 = p1->next;
+                                }
+
+                            }
+                            else
+                            {
+                                p1->next = head_array[mid1+i];
+                                head_array[mid1+i] = NULL;
+                            }
+                        }
+                    }
+  
+  ```
+  수업시간의 이야기를 토대로 recusrive 하게 merge를 수행하기보다는 iterative 하게 merge sort를 진행해보고자 하였습니다.
+  linked list 로 merge sort 를 진행하기 위해 다음과 같은 알고리즘을 세웠습니다. 각 node 들을 최소단위(1개의 노드)로 분해하여 이중포인터를 사용한 포인터 배열을 통해 분리시켜 놓습니다. 그런다음 mid 와 mid1(mid+1) 값을 매 루프마다 계산하며 갱신합니다. 이때, 이중포인터 array 는 각 
+노드들을 한번의 루프마다 merge 하게 됩니다. 이때, merge 가 일어나 그 head 가 존재하는곳은 이중포인터 array 의 start 부터 mid 까지의 부분입니다. 결과적으로 루프가 수행되면서 이 start와 mid 가 이중포인터의 0번째로 모두 합쳐지게 될 것이므로 총 loop 는 이중포인터의 1번째 배열이 NULL을 가리키면 종료할수 있습니다. 각 노드들이 병합될때, 두개의 array가 각각 key 값들을 비교하게 되고 이미 비교한 key 값들에 의해 그 뒤의 node 들은 sorting 되어 이미 연결되어있는 node 들과 다시한번 비교를 진행하지 않아도 됩니다. 이부분에서 수행시간에서의 이득이 발생합니다
+마지막으로 정렬된 linkedlist 의 연결된 node 들은 모두 head_array[0] 을 헤드로 하는 linkedlist 형태로 존재하므로 이 head 를 반환해주는 함수로 linkedlist 를 사용한 mergesort 함수를 작성하였습니다.
+
+
+
+ 
+  
+  
  
   
 -------------------------------------------------------  
