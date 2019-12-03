@@ -244,17 +244,79 @@
    5.int print_BST_2(FILE *fp, struct BTNode *bst, int level, struct Node *head, struct Node *top)
    
    * 다음으로 bst를 complete bst 로 변환하는 함수도 작성하였습니다
+   
      struct BTNode *BST_to_completeBST(struct BTNode *bst, int numNodes)
    
    * 또한, bst 를 insertion 으로 생성하는 것이 아닌 quicksort 알고리즘을 통해서 생성하는 함수도 작성하였습니다.
+   
      struct BTNode *generate_BST_quicksort_basic(struct BTNode *lhbt)
    
    * 마지막으로 bst를 quicksort 로 생성할때 , 그 root 를 어떤것으로 잡는지에 따라 height 가 차이가 나게 되는데, 최소한의 height 를
    가지기 위한 advanced 된 알고리즘을 작성하였습니다.
+   
      struct BTNode *generate_BST_quicksort_advanced(struct BTNode *lhbt)
 
 ## 함수설명3
-  * 
+  * struct BTNode *insert_to_BST_leaf(struct BTNode *bst, struct BTNode *newPtr)
+  ```c
+  if ( comparekey(bst, newPtr) < 0 ) {
+      /* FILL */
+      bst->right = insert_to_BST_leaf(bst->right, newPtr);
+    }
+    else {
+      /* FILL */
+      bst->left = insert_to_BST_leaf(bst->left,newPtr);
+    }
+  }  
+  ```
+  와 같이 key 값들을 비교하여 작다면 left link 로, 크다면 ,right 의 link로 node 를 보내주면 된다.
+  
+  * struct BTNode *generate_BST_by_insertion(struct BTNode *lhbt)
+  ```c
+  while(lhbt!=NULL)
+  {
+      newroot = insert_to_BST_leaf(newroot,lhbt);
+      lhbt->left = NULL;
+      lhbt = cur;
+      if(cur!=NULL) cur = cur->left;
+  }
+  return newroot;  
+  ```
+  while 문을 사용하여 모든 lhbt 의 노드들을 순회하여 계속하여 insert_to_bst_leaf 함수를 실행한다면, 가장 첫번째 lhbt node를 root 로 하는 bst 가 완성된다.
+  
+  * int print_LHBT(FILE *fp, struct BTNode *lhbt)
+  계속하여 포인터의 next 를 left 로 update 하며 모든 노드를 순회하여 출력할수 있다.
+  
+  * int print_BST_sortedorder(FILE *fp, struct BTNode *bst, int level)
+  ```c
+  int count;	// to count the number of nodes
+
+  count = 0;
+  if ( bst != NULL ) {
+    level++;	// root node of the current subtree exists
+
+    /* FILL: print left subtree */
+    if(bst->left!=NULL) count = print_BST_sortedorder(fp,bst->left,level);
+
+    // center node
+    fprintf(fp, "%s ",getkey(bst));
+    count++;
+
+    /* FILL: print right subtree */
+    if(bst->right!=NULL) count = count + print_BST_sortedorder(fp,bst->right,level);
+  }
+  //ount++;
+
+  // change the line once - only at the bst node
+  if ( level <= 1 ) fprintf(fp, "\n");
+
+  return count;
+  ```
+  재귀적으로 함수를 사용하여 bst root의 left 를 다시 새로운 함수의 root 로 하는 함수를 먼저 호출하게되고, left node 를 출력하게 되면 반환되어 그다음 본인 root 의 값을 출력, 마지막으로 다시금 right leaf 의 print 함수가 출력되어 마지막 leaf 에서 left,right node 가 모두 NULL 일때 함수가 더 이상 호출되지 않고 본인의 key값을 출력하도록 하는 재귀함수를 구현하였다. 간단히 말하면 left->root->right 순으로 출력하게 된다.
+  
+  * int print_BST_right_center_left(FILE *fp, struct BTNode *bst, int level)
+  
+  
   
 -------------------------------------------------------  
 # HW04    
