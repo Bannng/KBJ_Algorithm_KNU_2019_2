@@ -549,7 +549,7 @@
   ```
   backtrack 의 알고리즘은, 2차원배열의 가장마지막요소 B[W][n] 에서 시작해, 만약 왼쪽에 같은 값이 있다면 왼쪽으로 한칸이동, 없다면 바로 왼쪽열의 내가가진 weight 만큼 뺀 행으로 이동한다. 이를 통해 best final benefit 에서부터 무슨 아이템을 마지막으로 넣었는지 찾아낼 수 있으며, 이 찾아낸 값들을 stack 에 push 하여 가장 먼저 넣은 item 이 stack 의 top에 저장되게 된다. item 을 확인, 출력하기 위해선 단지 stack 에 저장된 item 의 인덱스 값들을 pop 해주기만 하면 된다.
   
-  *  0-1knapsack with one item split
+  * 2. 0-1knapsack with one item split
   ```c
   double **dp2(struct spitem *ssary, int n, int W)
 {
@@ -558,9 +558,155 @@
     for(int i=0; i<2*W+1; i++) B[i] = (double*)malloc((n+1)*sizeof(double));
     //int B[W+1][n+1];
   ```
-  2번 문제에서 dp table 은 value 값이 double 형을 가진다는것, split 된 아이템의 value 가 0.5 단위가 되므로 0~8까지의 weight 에서 0~16 까지의 weight 로 표현하였다. 실제 0~16까지인것이 아니라, 0,0.5,1,1.5 로 눈금이 0.5 로 변경됨에 따라 배열의 행 index 에는 소숫점으로 접근할수 없으므로 16개의 정수로 표현하였다. best 한 benefit 은 **B[2*W][n]** 에 저장된다.
-  
-  
+  2번 문제에서 dp table 은 value 값이 double 형을 가진다는것, split 된 아이템의 value 가 0.5 단위가 되므로 0에서8까지의 weight 에서 0부터16 까지의 weight 로 표현하였다. 실제 0~16까지인것이 아니라, 0,0.5,1,1.5 로 눈금이 0.5 로 변경됨에 따라 배열의 행 index 에는 소숫점으로 접근할수 없으므로 16개의 정수로 표현하였다. best 한 benefit 은 B[2W][n]에 저장된다.
+
+2번 문제를 해결하기 위해서, 총 5개의 case 를 실행하였다. 1번아이템을 두개로 나눌경우, 2번아이템,3번,4번 을 2개로 나눌경우의 4가지
+그리고 아무 아이템도 나누지 않을 경우의 총 5가지 경우를 비교하여 가장 큰 final value 를 가지는 경우를 선택하는 방식으로 하였다. backtrack 함수는 1번과 크게 다르지 않으며, 
+```c
+double ***P2(struct item *sary, int n, int W)
+{
+    printf("\n\n----P2. 0-1 Knapsack with one item split------\n\n");
+    double **B;
+    double ***A = (double***)malloc(sizeof(double**)*(n+1));
+    struct spitem *mixary;
+    for(int i=0; i<=n;i++)
+    {
+        printf("for case : %d\n",i+1);
+        mixary = getmixary(sary,n,i);
+        B = dp2(mixary,n,W);
+        *(A+i) = B;
+        backtrack2(B,n,W,mixary,i);
+        printf("\n\n");
+    }
+    printf("list of benefit :");
+    for(int i=0; i<=n ; i++) printf("%.1f ",A[i][2*W][n]);
+    int maxindex = argmax(A,n,W);
+    printf("\nargmax is : %d\n\n",maxindex);
+
+    mixary = getmixary(sary,n,maxindex);
+    printf("-------------------------------\n");
+    printf("the best benefit is : %.1f\n",A[maxindex][2*W][n]);
+    backtrack2(A[maxindex],n,W,mixary,maxindex);
+    printf("\n-------------------------------\n");
+    return A;
+}
+```
+와 같이 모든 case 를 수행한 dp table 을 3차원 cube로 쌓아 A[maxindex][2W][n] 와 같이 최종 value 를 비교하기 용이하게 하였다. 이 array를 search 하여 최고의 값을 가지는 index 를 반환하는 argmax 함수를 사용하여 해당 dptable 에 대해 backtrack 을 진행하게 하였다.
+
+ * 3. 0-1knapsack with one duplicate item
+ 3번 문제도 2번문제와 접근방식이 같다. 다만, 2번문제에선 item 을 split 하였기때문에 weight 의 범위가 2배가 되었지만(실제로는 아니다)
+ 3번 문제에선 1개의 아이템이 추가된것과 마찬가지 이므로, i의 값이 1늘어난 경우의 dptable 을 작성하는것으로 생각하였다.
+ ```c
+ int ***P3(struct item *sary, int n, int W)
+{
+    printf("\n\n---P3. 0-1 Knapsack with one duplicate item---\n\n");
+    int ***C = (int***)malloc(sizeof(int**)*(n+1));
+    int **D;
+    struct item *plusary;
+    for(int i=0;i<=n;i++)
+    {
+        printf("for case : %d\n",i+1);
+        plusary = getplusary(sary,n,i);
+        D = dp(plusary,n+1,W);
+        *(C+i) = D;
+        backtrack3(D,n+1,W,plusary,i);
+        printf("\n\n");
+    }
+    printf("list of benefit : ");
+    for(int i=0 ; i<=n ; i++) printf("%d ",C[i][W][n+1]);
+    int mmax = getmax(C,n,W);
+    printf("\nmax benefit : %d\n\n",mmax);
+
+    printf("====Show every possible ways====\n");
+    printf("the best benefit is : %d\n",mmax);
+    for(int i=0; i<=n ;i++)
+    {
+        if(mmax == C[i][W][n+1])
+        {
+            printf("-------------------------------\n");
+            plusary = getplusary(sary,n,i);
+            backtrack3(C[i],n+1,W,plusary,i);
+            printf("\n-------------------------------\n");
+        }
+    }
+    return C;
+}
+ ```
+ 참조하는 item array 를 확장한 plusary 함수를 통해 i를 증가시키고 이 데이터를 기반으로 dptable 을 작성한다, dptable은 2번에서와 마찬가지로 총 5개의 경우에 대해 작성을 하게 되는데, 1번,2,3,4번을 2번씩 사용할 경우와 아무것도 2번씩 사용하지 않을 경우에 대해 dptable 을 구성한다.
+ 2번과 마찬가지로 3중포인터를 통해 dptable 을 쌓아올리고,  C[i][W][n+1] 의 배열을 뒤지면서 가장 best 한 값을 찾는다. 다만 이경우에서, best 한 결과를 나타내는 방법이 여러가지가 될수 있으므로, for문을 사용하여 최대 value  를 가지는 dptable 을 모두 선택하여 backtrack 을 진행하도록 하여 가능한 모든 경우의수를 나타내게 하였다.
+ 
+ * 4. 0-1knapsack with two identical knapsacks
+ 해당 문제는 두개의 knapsack 에 아이템을 집어넣는 문제로, 처음에는 dp로 문제를 풀려고 하였으나 모든경우의수를 찾기는 힘들다는 판단하에
+ greedy 알고리즘을 사용하여 문제를 해결해 보았다.
+ 
+ ```c
+ struct bag *P4(struct item *sary, int n, int W, int W2)
+{
+    struct spitem *rankedary;
+    struct bag *bagary = (struct bag*)malloc(sizeof(struct bag)*2);
+    int rankedlist[n];
+    struct bag *lowptr,*bigptr;
+    int j=0;
+
+    rankedary = getrankedary(sary,n);
+    printf("\n");
+
+    for(int i=0; i<n;i++)
+    {
+        rankedlist[i] = (rankedary+i)->index-1;
+        //printf("rankedlist[%d] = %d\n",i,rankedlist[i]);
+    }
+
+    (bagary+0)->bagweight = W;
+    (bagary+0)->bagvalue = 0;
+    (bagary+0)->bagindex = 1;
+    (bagary+1)->bagweight = W2;
+    (bagary+1)->bagvalue = 0;
+    (bagary+1)->bagindex = 2;
+    /*
+    for(int i=0; i<2;i++)
+    {
+        printf("bagary's weight = %d value : %d\n",(bagary+i)->bagweight,(bagary+i)->bagvalue);
+    }
+    */
+
+    lowptr = minptr(bagary);
+    bigptr = maxptr(bagary);
+
+    while((lowptr)->bagweight > 0)
+    {
+        lowptr->bagweight = lowptr->bagweight - (sary+rankedlist[j])->weight;
+        if(lowptr->bagweight < 0 )
+        {
+            lowptr->bagweight = lowptr->bagweight + (sary+rankedlist[j])->weight;
+            break;
+        }
+        lowptr->bagvalue = lowptr->bagvalue + (sary+rankedlist[j])->value;
+        //printf("bag1's weight : %d , bagvalue : %d and plusvalue : %d and j :%d\n",lowptr->bagweight,lowptr->bagvalue,(sary+rankedlist[j])->value,j);
+        printf("you should put item <index : %d> into the <bag : %d>\n",(sary+rankedlist[j])->index,lowptr->bagindex);
+        j++;
+    }
+
+    while((bigptr)->bagweight > 0)
+    {
+        bigptr->bagweight = bigptr->bagweight - (sary+rankedlist[j])->weight;
+        if(bigptr->bagweight < 0 )
+        {
+            bigptr->bagweight = bigptr->bagweight + (sary+rankedlist[j])->weight;
+            break;
+        }
+        bigptr->bagvalue = bigptr->bagvalue + (sary+rankedlist[j])->value;
+        //printf("bag2's weight : %d , bagvalue : %d and plusvalue : %d and j :%d\n",bigptr->bagweight,bigptr->bagvalue,(sary+rankedlist[j])->value,j);
+        printf("you should put item <index : %d> into the <bag : %d>\n",(sary+rankedlist[j])->index,bigptr->bagindex);
+        j++;
+    }
+    printf("Sum of Bag1 and Bag2's value is : %d\n",(bagary+0)->bagvalue+(bagary+1)->bagvalue);
+    printf("---------------------------------------------------\n");
+    return bagary;
+}
+ ```
+ 4번 문제해결의 아이디어는, 단위 weight 당 value 가 가장 높은 item 부터 정렬하여, 가장 높은 아이템들이 bag의 수용범위가 작은 bag 부터 먼저 채워나가는 방식으로 접근하였다. 그 이유는 단위 weight 당 value 가 낮다면, 비슷한 value 에서 weight 도 그만큼 클것이고, 이를 모두 포용하려면 이러한 단위 weight 당 value 가 낮은 item 들이 더 큰 knapsack 에 들어가야 한다고 생각했기 때문이다.
+ 고로, 실제 위의 코드에도 아이템들을 단위무게당 value 순으로 정렬하였고, 이를 두 냅색중 weight 가 더 작은 knapsack 부터 채워넣는 식으로 코드를 작성하였다.  
   
 -------------------------------------------------------  
   
