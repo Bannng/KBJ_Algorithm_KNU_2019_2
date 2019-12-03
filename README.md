@@ -228,7 +228,24 @@
 -------------------------------------------------------  
 # HW03    
 ## 개요3
-  * 
+  * HW03 는 binary search tree 를 구현하는 과제입니다.
+  이번 과제에선 모두 재귀함수를 사용하여 트리를 구성하였습니다. 데이터 구조는 노드안에 bulksize 만큼의 char array 가 있고 교수님께서
+  미리 만들어주신 template 에 있는 함수연산을 통해서만 값들을 비교, 출력할 수 있습니다.
+  bst 를 완성하기 위해 작성한 함수들은 아래와 같습니다.
+  1. struct BTNode *insert_to_BST_leaf(struct BTNode *bst, struct BTNode *newPtr)
+  2. struct BTNode *generate_BST_by_insertion(struct BTNode *lhbt)
+   위의 두가지 함수가 bst 를 만드는 함수로 1번 함수는 노드 1개를 기존의 bst에 삽입하는 알고리즘입니다. 2번 함수는 fileio 를 통해 txt 파일을 통해 읽어들인 숫자들이 lhbt 즉 왼쪽 링크로만 이어진 트리형태로 반환되게 되고, 이를 인자로 받아 bst 를 완성하는 함수입니다.
+   
+   다음으로 bst 를 출력하는것에 대한 함수도 작성하였습니다.
+   1.int print_LHBT(FILE *fp, struct BTNode *lhbt)
+   2.int print_BST_sortedorder(FILE *fp, struct BTNode *bst, int level)
+   3.int print_BST_right_center_left(FILE *fp, struct BTNode *bst, int level)
+   4.int print_BST_1(FILE *fp, struct BTNode *bst, int level)
+   5.int print_BST_2(FILE *fp, struct BTNode *bst, int level, struct Node *head, struct Node *top)
+
+의 출력에 관련된 함수들을 작성하였습니다.
+  
+  
 
 
 ## 함수설명3
