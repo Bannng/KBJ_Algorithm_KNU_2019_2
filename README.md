@@ -315,6 +315,14 @@
   재귀적으로 함수를 사용하여 bst root의 left 를 다시 새로운 함수의 root 로 하는 함수를 먼저 호출하게되고, left node 를 출력하게 되면 반환되어 그다음 본인 root 의 값을 출력, 마지막으로 다시금 right leaf 의 print 함수가 출력되어 마지막 leaf 에서 left,right node 가 모두 NULL 일때 함수가 더 이상 호출되지 않고 본인의 key값을 출력하도록 하는 재귀함수를 구현하였다. 간단히 말하면 left->root->right 순으로 출력하게 된다.
   
   * int print_BST_right_center_left(FILE *fp, struct BTNode *bst, int level)
+  //         999
+  //     777
+  //         555
+  // 333
+  //     222
+  //         111
+   와 같이 
+  
   
   
   
